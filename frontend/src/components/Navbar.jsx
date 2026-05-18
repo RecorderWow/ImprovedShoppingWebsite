@@ -1,11 +1,11 @@
 export default function Navbar({ setPage }) {
     return (
         <nav style={styles.nav}>
-            <h2 style={styles.logo}>ClothingStore</h2>
+            <h2 style={styles.logo}>THE VOUGHT STORE</h2>
 
             <div style={styles.links}>
-                <button onClick={() => setPage("home")}>Home</button>
-                <button onClick={() => setPage("cart")}>Cart</button>
+                <span onClick={() => setPage("home")}>Shop</span>
+                <span onClick={() => setPage("cart")}>Cart</span>
             </div>
         </nav>
     );
@@ -15,17 +15,18 @@ const styles = {
     nav: {
         display: "flex",
         justifyContent: "space-between",
-        padding: "20px 40px",
-        background: "#111",
-        color: "white",
+        padding: "30px 60px",
         alignItems: "center",
     },
     logo: {
-        margin: 0,
-        letterSpacing: "2px",
+        fontSize: "22px",
+        letterSpacing: "3px",
     },
     links: {
         display: "flex",
-        gap: "20px",
+        gap: "40px",
+        fontSize: "14px",
+        textTransform: "uppercase",
+        cursor: "pointer",
     },
 };

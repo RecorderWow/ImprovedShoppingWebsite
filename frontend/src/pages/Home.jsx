@@ -6,6 +6,13 @@ export default function Home() {
     const [products, setProducts] = useState([]);
     const [search, setSearch] = useState("");
 
+    const grid = {
+        display: "grid",
+        gridTemplateColumns: "repeat(3, 1fr)",
+        gap: "40px",
+        padding: "60px",
+    };
+
     useEffect(() => {
         loadProducts();
     }, [search]);
@@ -40,13 +47,7 @@ export default function Home() {
             />
 
             {/* PRODUCT GRID */}
-            <div
-                style={{
-                    display: "grid",
-                    gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
-                    gap: 20,
-                }}
-            >
+            <div style={grid}>
                 {products.map((p) => (
                     <ProductCard key={p.id} product={p} onAdd={handleAdd} />
                 ))}

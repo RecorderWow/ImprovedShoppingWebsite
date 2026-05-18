@@ -42,15 +42,21 @@ router.get('/cart', async (req, res) => {
 // ADD to cart
 router.post('/cart', async (req, res) => {
     const { product_id, quantity } = req.body;
+
     try {
-        const result = await pool.query(
-            'INSERT INTO cart (product_id, quantity) VALUES ($1, $2) RETURNING *',
-            [product_id, quantity]
-        );
+        const result = await pool.query(`
+            INSERT INTO cart (product_id, quantity)
+            VALUES ($1, $2)
+            ON CONFLICT (product_id)
+            DO UPDATE SET quantity = cart.quantity + EXCLUDED.quantity
+            RETURNING *;
+        `, [product_id, quantity]);
+
         res.json(result.rows[0]);
+
     } catch (err) {
-        console.error(err);
-        res.status(500).send('Server error');
+        console.error("CART ERROR:", err);
+        res.status(500).json({ error: err.message });
     }
 });
 

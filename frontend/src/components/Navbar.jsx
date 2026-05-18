@@ -1,11 +1,11 @@
-export default function Navbar() {
+export default function Navbar({ setPage }) {
     return (
         <nav style={styles.nav}>
             <h2 style={styles.logo}>ClothingStore</h2>
+
             <div style={styles.links}>
-                <a href="#">Home</a>
-                <a href="#">Cart</a>
-                <a href="#">Login</a>
+                <button onClick={() => setPage("home")}>Home</button>
+                <button onClick={() => setPage("cart")}>Cart</button>
             </div>
         </nav>
     );

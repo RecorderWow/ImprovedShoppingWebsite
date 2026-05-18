@@ -5,14 +5,23 @@ const pool = require('../db');
 // GET all products
 router.get('/', async (req, res) => {
     try {
-        const result = await pool.query('SELECT * FROM products');
+        const { search } = req.query;
+
+        let query = 'SELECT * FROM products';
+        let params = [];
+
+        if (search) {
+            query += ' WHERE name ILIKE $1';
+            params.push(`%${search}%`);
+        }
+
+        const result = await pool.query(query, params);
         res.json(result.rows);
     } catch (err) {
         console.error(err);
         res.status(500).send('Server error');
     }
 });
-
 // CRUD for cart
 
 // GET cart items

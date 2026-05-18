@@ -1,9 +1,11 @@
-function App() {
+import Navbar from "./components/Navbar";
+import Home from "./pages/Home";
+
+export default function App() {
   return (
     <div>
-      <h1>Clothing Store SPA</h1>
+      <Navbar />
+      <Home />
     </div>
   );
 }
-
-export default App;

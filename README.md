@@ -1,19 +1,32 @@
-This project is a Single Page Application (SPA) shopping cart system for my programming on the internet assignment.
+PROJECT NAME: THE VOUGHT STORE
+
+DESC: This project is a Single Page Application (SPA) shopping cart system for my programming on the internet assignment.
 What can you do with the site?:
 
 View products (read)
 Add items to a cart (create)
 Update quantities (update)
 Remove items from the cart(delete)
+Account system
+User auth system
+live search bar that updates while the user types
+admin account features
 
 (basically CRUD Operations)
 
 Things i used in the project->
-Frontend: HTML, CSS, Vanilla JavaScript (Fetch API)
+Frontend: HTML, CSS, React.js
 
 Backend: Node.js, Express.js, CORS, Body parser
 
 Database: PostgreSQL
+
+PROBLEMS I FACED:
+1.Quantity issue while adding to cart
+2.Fetching cart error
+
+How I solved them: 1. First I made the product id uniqe in the database so there wont be any case of duplicate products then I updated the line that adds product to cart to check conflicts which would happen if the same product id get entered. Which after that updates the quantity of the conflicted product which solves the issue of duplicate products in cart.
+2.fetching cart error was happening because of a basic API rotue issue which I solved after checking the route. Since I changed from vanilla javascript to react this was quite expected while writting the new code. So i just fixed the route lines and it solved the issue.
 
 HOW THE SITE WORKS: 
 Frontend loads products using fetch() from the backend. Dynamically updates the DOM and Handles user actions like: Add to cart, Update quantity, Delete item

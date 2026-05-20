@@ -1,7 +1,16 @@
 export default function ProductCard({ product, onAdd }) {
     return (
         <div style={styles.card}>
-            <img src={product.image_url} style={styles.img} />
+            <img
+                src={product.image_url}
+                style={styles.img}
+                onMouseOver={(e) =>
+                    (e.currentTarget.style.transform = "scale(1.03)")
+                }
+                onMouseOut={(e) =>
+                    (e.currentTarget.style.transform = "scale(1)")
+                }
+            />
 
             <div style={styles.info}>
                 <h3>{product.name}</h3>
@@ -21,9 +30,10 @@ const styles = {
     },
     img: {
         width: "100%",
-        height: "400px",
+        height: "420px",
         objectFit: "cover",
         marginBottom: "10px",
+        transition: "0.4s ease",
     },
     info: {
         display: "flex",

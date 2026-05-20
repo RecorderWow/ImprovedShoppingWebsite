@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { getProducts, addToCart } from "../api/api";
 import ProductCard from "../components/ProductCard";
+import Hero from "../components/Hero";
 
 export default function Home() {
     const [products, setProducts] = useState([]);
@@ -35,23 +36,39 @@ export default function Home() {
     }
 
     return (
-        <div style={{ padding: 20 }}>
-            <h1>Products</h1>
+        <>
+            <Hero />
 
-            {/* LIVE SEARCH */}
-            <input
-                placeholder="Search products..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                style={{ padding: 10, width: "100%", marginBottom: 20 }}
-            />
+            <div style={{ padding: "40px 60px 0" }}>
+                <h1>VOUGHT Favorites</h1>
+
+                {/* LIVE SEARCH */}
+                <input
+                    placeholder="Search products..."
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    style={{
+                        padding: "12px",
+                        width: "100%",
+                        marginTop: "20px",
+                        marginBottom: "40px",
+                        border: "1px solid #ccc",
+                        background: "transparent",
+                        fontSize: "16px",
+                    }}
+                />
+            </div>
 
             {/* PRODUCT GRID */}
             <div style={grid}>
                 {products.map((p) => (
-                    <ProductCard key={p.id} product={p} onAdd={handleAdd} />
+                    <ProductCard
+                        key={p.id}
+                        product={p}
+                        onAdd={handleAdd}
+                    />
                 ))}
             </div>
-        </div>
+        </>
     );
 }

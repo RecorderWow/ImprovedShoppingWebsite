@@ -10,13 +10,13 @@ export default function Login({ setPage }) {
     const [error, setError] = useState("");
 
     const handleLogin = async () => {
-        setError(""); // clear previous errors
+        setError("");
 
         const data = await login(username, password);
 
         if (data.token) {
             authLogin(data);
-            setPage("home"); // optional: redirect after login
+            setPage("home"); // redirect after login
         } else {
             setError("Invalid username or password");
         }

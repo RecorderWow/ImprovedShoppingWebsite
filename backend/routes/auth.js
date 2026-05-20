@@ -13,20 +13,45 @@ router.post('/register', async (req, res) => {
     const { username, password } = req.body;
 
     try {
-        // hash password
+        // VALIDATION CHECKS
+        if (!username || !password) {
+            return res.status(400).json({
+                error: "Username and password are required"
+            });
+        }
+
+        if (username.trim().length < 3) {
+            return res.status(400).json({
+                error: "Username must be at least 3 characters"
+            });
+        }
+
+        if (password.length < 6) {
+            return res.status(400).json({
+                error: "Password must be at least 6 characters"
+            });
+        }
+
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // insert user
         const result = await pool.query(
             'INSERT INTO users (username, password) VALUES ($1, $2) RETURNING id, username',
-            [username, hashedPassword]
+            [username.trim(), hashedPassword]
         );
 
         res.json(result.rows[0]);
 
     } catch (err) {
+        if (err.code === '23505') {
+            return res.status(400).json({
+                error: "Username already exists"
+            });
+        }
+
         console.error(err);
-        res.status(500).send('Register error');
+        res.status(500).json({
+            error: "Server error"
+        });
     }
 });
 

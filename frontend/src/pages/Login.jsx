@@ -7,15 +7,18 @@ export default function Login({ setPage }) {
 
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
 
     const handleLogin = async () => {
+        setError(""); // clear previous errors
+
         const data = await login(username, password);
 
         if (data.token) {
             authLogin(data);
-            alert("Login successful");
+            setPage("home"); // optional: redirect after login
         } else {
-            alert("Login failed");
+            setError("Invalid username or password");
         }
     };
 
@@ -45,6 +48,13 @@ export default function Login({ setPage }) {
                 <button style={styles.button} onClick={handleLogin}>
                     Sign In
                 </button>
+
+                {/* ERROR MESSAGE */}
+                {error && (
+                    <div style={styles.error}>
+                        {error}
+                    </div>
+                )}
 
                 <p style={styles.footer}>
                     New here?{" "}
@@ -109,6 +119,15 @@ const styles = {
         cursor: "pointer",
         marginTop: "10px",
         letterSpacing: "1px",
+    },
+
+    error: {
+        marginTop: "15px",
+        padding: "10px",
+        fontSize: "13px",
+        color: "#b00020",
+        background: "#ffe6e6",
+        border: "1px solid #ffb3b3",
     },
 
     footer: {

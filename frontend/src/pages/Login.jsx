@@ -7,18 +7,42 @@ export default function Login({ setPage }) {
 
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+
     const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const handleLogin = async () => {
         setError("");
 
-        const data = await login(username, password);
+        // FRONTEND VALIDATION
+        if (!username || !password) {
+            setError("Please fill in all fields");
+            return;
+        }
 
-        if (data.token) {
-            authLogin(data);
-            setPage("home"); // redirect after login
-        } else {
-            setError("Invalid username or password");
+        try {
+            setLoading(true);
+
+            const data = await login(username, password);
+
+            if (data.token) {
+                // save token
+                localStorage.setItem("token", data.token);
+
+                // save user data
+                authLogin(data);
+
+                // redirect to home
+                setPage("home");
+
+            } else {
+                setError(data.error || "Invalid username or password");
+            }
+
+        } catch (err) {
+            setError("Server error. Please try again.");
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -26,6 +50,7 @@ export default function Login({ setPage }) {
         <div style={styles.page}>
             <div style={styles.card}>
                 <h1 style={styles.title}>Welcome Back</h1>
+
                 <p style={styles.subtitle}>
                     Sign in to continue your experience
                 </p>
@@ -45,8 +70,16 @@ export default function Login({ setPage }) {
                     onChange={(e) => setPassword(e.target.value)}
                 />
 
-                <button style={styles.button} onClick={handleLogin}>
-                    Sign In
+                <button
+                    style={{
+                        ...styles.button,
+                        opacity: loading ? 0.7 : 1,
+                        cursor: loading ? "not-allowed" : "pointer",
+                    }}
+                    onClick={handleLogin}
+                    disabled={loading}
+                >
+                    {loading ? "Signing In..." : "Sign In"}
                 </button>
 
                 {/* ERROR MESSAGE */}
@@ -59,7 +92,10 @@ export default function Login({ setPage }) {
                 <p style={styles.footer}>
                     New here?{" "}
                     <span
-                        style={{ textDecoration: "underline", cursor: "pointer" }}
+                        style={{
+                            textDecoration: "underline",
+                            cursor: "pointer",
+                        }}
                         onClick={() => setPage("register")}
                     >
                         Create an account
@@ -116,7 +152,6 @@ const styles = {
         background: "#111",
         color: "white",
         border: "none",
-        cursor: "pointer",
         marginTop: "10px",
         letterSpacing: "1px",
     },
@@ -134,6 +169,5 @@ const styles = {
         marginTop: "20px",
         fontSize: "12px",
         opacity: 0.6,
-        cursor: "pointer",
     },
 };

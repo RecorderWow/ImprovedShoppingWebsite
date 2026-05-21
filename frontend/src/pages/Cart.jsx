@@ -4,21 +4,56 @@ const API = "http://localhost:5000/api/products";
 
 export default function Cart() {
     const [cart, setCart] = useState([]);
+    const [error, setError] = useState("");
+
+    const token = localStorage.getItem("token");
 
     async function loadCart() {
-        const res = await fetch(`${API}/cart`);
-        const data = await res.json();
-        setCart(data);
+        try {
+            setError("");
+
+            const res = await fetch(`${API}/cart`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            const data = await res.json();
+
+            if (!Array.isArray(data)) {
+                setError(data.error || "Failed to load cart");
+                setCart([]);
+                return;
+            }
+
+            setCart(data);
+
+        } catch (err) {
+            setError("Server error");
+            setCart([]);
+        }
     }
 
     useEffect(() => {
+        // BLOCK UNAUTHENTICATED USERS
+        if (!token) {
+            setCart([]);
+            setError("");
+            return;
+        }
+
         loadCart();
-    }, []);
+    }, [token]);
 
     async function updateQuantity(id, quantity) {
+        const token = localStorage.getItem("token");
+
         await fetch(`${API}/cart/${id}`, {
             method: "PUT",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
             body: JSON.stringify({ quantity }),
         });
 
@@ -26,13 +61,40 @@ export default function Cart() {
     }
 
     async function removeItem(id) {
-        await fetch(`${API}/cart/${id}`, { method: "DELETE" });
+        const token = localStorage.getItem("token");
+
+        await fetch(`${API}/cart/${id}`, {
+            method: "DELETE",
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
         loadCart();
+    }
+
+    // NOT LOGGED IN VIEW
+    if (!token) {
+        return (
+            <div style={{ padding: 20 }}>
+                <h2>You must be logged in to view your cart</h2>
+            </div>
+        );
     }
 
     return (
         <div style={{ padding: 20 }}>
             <h1>Your Cart</h1>
+
+            {error && (
+                <div style={{ color: "red", marginBottom: 10 }}>
+                    {error}
+                </div>
+            )}
+
+            {cart.length === 0 && !error && (
+                <p>Your cart is empty.</p>
+            )}
 
             {cart.map((item) => (
                 <div key={item.cart_id} style={styles.item}>

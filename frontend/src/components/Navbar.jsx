@@ -7,12 +7,30 @@ export default function Navbar({ setPage }) {
     return (
         <nav style={styles.nav}>
             {/* LOGO */}
-            <h2 style={styles.logo}>THE VOUGHT STORE</h2>
+            <h2
+                style={styles.logo}
+                onClick={() => setPage("home")}
+            >
+                THE VOUGHT STORE
+            </h2>
 
             {/* NAV LINKS */}
             <div style={styles.links}>
-                <span onClick={() => setPage("home")}>Shop</span>
-                <span onClick={() => setPage("cart")}>Cart</span>
+
+                <span onClick={() => setPage("home")}>
+                    Shop
+                </span>
+
+                <span onClick={() => setPage("cart")}>
+                    Cart
+                </span>
+
+                {/* ADMIN ONLY */}
+                {user?.is_admin && (
+                    <span onClick={() => setPage("admin")}>
+                        Admin
+                    </span>
+                )}
 
                 {/* AUTH SECTION */}
                 {user ? (
@@ -33,11 +51,17 @@ export default function Navbar({ setPage }) {
                     </>
                 ) : (
                     <>
-                        <span onClick={() => setPage("login")} style={styles.authBtn}>
+                        <span
+                            onClick={() => setPage("login")}
+                            style={styles.authBtn}
+                        >
                             Login
                         </span>
 
-                        <span onClick={() => setPage("register")} style={styles.authBtn}>
+                        <span
+                            onClick={() => setPage("register")}
+                            style={styles.authBtn}
+                        >
                             Register
                         </span>
                     </>
@@ -61,6 +85,7 @@ const styles = {
         fontSize: "22px",
         letterSpacing: "3px",
         fontFamily: "serif",
+        cursor: "pointer",
     },
 
     links: {

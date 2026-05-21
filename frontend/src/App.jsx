@@ -4,6 +4,7 @@ import Home from "./pages/Home";
 import Cart from "./pages/Cart";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import Admin from "./pages/Admin";
 
 function App() {
   const [page, setPage] = useState("home");
@@ -18,6 +19,8 @@ function App() {
         return <Login setPage={setPage} />;
       case "register":
         return <Register setPage={setPage} />;
+      case "admin":
+        return <Admin />;
       default:
         return <Home />;
     }

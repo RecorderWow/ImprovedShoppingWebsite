@@ -21,7 +21,13 @@ export default function Navbar({ setPage }) {
                             {user.username}
                         </span>
 
-                        <span onClick={logout} style={styles.authBtn}>
+                        <span
+                            onClick={() => {
+                                logout();
+                                setPage("login");
+                            }}
+                            style={styles.authBtn}
+                        >
                             Logout
                         </span>
                     </>

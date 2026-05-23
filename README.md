@@ -66,16 +66,6 @@ How I solved them:
 
 
 
-HOW THE SITE WORKS: 
-Frontend loads products using fetch() from the backend. Dynamically updates the DOM and Handles user actions like: Add to cart, Update quantity, Delete item
-
-On Backend RESTful API built with Express which Handles requests from frontend and Communicates with PostgreSQL database
-
-Database stores products and cart data and uses SQL queries for CRUD operations
-
-
-
-
 SETUP GUIDE->
 before starting the steps make sure you download Node.js, PostgreSQL and npm
 

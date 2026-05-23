@@ -5,22 +5,22 @@ const API = "http://localhost:5000/api/products";
 export default function Cart() {
     const [cart, setCart] = useState([]);
     const [error, setError] = useState("");
+    const [token, setToken] = useState(localStorage.getItem("token"));
 
-    const token = localStorage.getItem("token");
-
-    async function loadCart() {
+    // LOAD CART
+    async function loadCart(currentToken) {
         try {
             setError("");
 
             const res = await fetch(`${API}/cart`, {
                 headers: {
-                    Authorization: `Bearer ${token}`,
+                    Authorization: `Bearer ${currentToken}`,
                 },
             });
 
             const data = await res.json();
 
-            if (!Array.isArray(data)) {
+            if (!res.ok) {
                 setError(data.error || "Failed to load cart");
                 setCart([]);
                 return;
@@ -29,49 +29,74 @@ export default function Cart() {
             setCart(data);
 
         } catch (err) {
+            console.error(err);
             setError("Server error");
             setCart([]);
         }
     }
 
+    // INIT + TOKEN WATCHER
     useEffect(() => {
-        // BLOCK UNAUTHENTICATED USERS
-        if (!token) {
+        const storedToken = localStorage.getItem("token");
+
+        setToken(storedToken);
+
+        if (!storedToken) {
             setCart([]);
             setError("");
             return;
         }
 
-        loadCart();
-    }, [token]);
+        loadCart(storedToken);
 
+    }, []);
+
+    // UPDATE QUANTITY
     async function updateQuantity(id, quantity) {
-        const token = localStorage.getItem("token");
+        const currentToken = localStorage.getItem("token");
 
-        await fetch(`${API}/cart/${id}`, {
+        if (!currentToken) return;
+
+        const res = await fetch(`${API}/cart/${id}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
+                Authorization: `Bearer ${currentToken}`,
             },
-            body: JSON.stringify({ quantity }),
+            body: JSON.stringify({
+                quantity: Number(quantity),
+            }),
         });
 
-        loadCart();
+        if (!res.ok) {
+            console.error("Failed to update cart");
+            return;
+        }
+
+        loadCart(currentToken);
     }
 
+    // REMOVE ITEM
     async function removeItem(id) {
-        const token = localStorage.getItem("token");
+        const currentToken = localStorage.getItem("token");
 
-        await fetch(`${API}/cart/${id}`, {
+        if (!currentToken) return;
+
+        const res = await fetch(`${API}/cart/${id}`, {
             method: "DELETE",
             headers: {
-                Authorization: `Bearer ${token}`,
+                Authorization: `Bearer ${currentToken}`,
             },
         });
 
-        loadCart();
+        if (!res.ok) {
+            console.error("Failed to delete item");
+            return;
+        }
+
+        loadCart(currentToken);
     }
+
 
     // NOT LOGGED IN VIEW
     if (!token) {
@@ -86,16 +111,19 @@ export default function Cart() {
         <div style={{ padding: 20 }}>
             <h1>Your Cart</h1>
 
+            {/* ERROR */}
             {error && (
                 <div style={{ color: "red", marginBottom: 10 }}>
                     {error}
                 </div>
             )}
 
+            {/* EMPTY STATE */}
             {cart.length === 0 && !error && (
                 <p>Your cart is empty.</p>
             )}
 
+            {/* CART ITEMS */}
             {cart.map((item) => (
                 <div key={item.cart_id} style={styles.item}>
                     <div>
@@ -107,7 +135,10 @@ export default function Cart() {
                         type="number"
                         value={item.quantity}
                         onChange={(e) =>
-                            updateQuantity(item.cart_id, e.target.value)
+                            updateQuantity(
+                                item.cart_id,
+                                Number(e.target.value)
+                            )
                         }
                     />
 

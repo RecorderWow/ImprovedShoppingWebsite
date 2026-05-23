@@ -56,6 +56,7 @@ Authentication and Security: JWT (JSON Web Tokens), bcrypt password hashing
 PROBLEMS I FACED:
 1.Quantity issue while adding to cart
 2.Fetching cart error
+3.Adding to cart error(500)
 
 How I solved them: 
 
@@ -63,6 +64,7 @@ How I solved them:
 
 2.fetching cart error was happening because of a basic API rotue issue which I solved after checking the route. Since I changed from vanilla javascript to react this was quite expected while writting the new code. So i just fixed the route lines and it solved the issue.
 
+3.adding to cart error happened because of the unique product id i made for the first issue. Since I am working with account specific carts this caused an issue. To fix it I made both product id and user id unique so it would check both before giving an error.
 
 
 
@@ -98,6 +100,11 @@ CREATE TABLE cart (
     product_id INT REFERENCES products(id),
     quantity INT DEFAULT 1
 );
+
+THEN RUN THIS
+
+ALTER TABLE cart
+ADD CONSTRAINT unique_user_product UNIQUE (user_id, product_id);
 
 
 
